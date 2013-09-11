@@ -1,4 +1,4 @@
-peglisp
-=======
+peg_lisp
+========
 
-Simple lisp parser and interpreter with the help of pegrb.
+A simple grammar for a simple subset of lisp.
