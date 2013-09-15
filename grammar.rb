@@ -65,6 +65,14 @@ module SimpleLisp
         variable = tail[0].value
         value = tail[1].eval(env)
         env.define(variable, value)
+      when :'define-macro'
+        macro_name = tail[0].value
+        macro_args = tail[1].value.map(&:value)
+        if macro_args.length != macro_args.uniq.length
+          raise StandardError, "Macro arguments must be unique."
+        end
+        env.define(macro_name, tail)
+        binding.pry
       when :begin
         return_value = nil
         tail.each {|node| return_value = node.eval(env)}
@@ -76,6 +84,9 @@ module SimpleLisp
         boolean.value ? tail[1].eval(env) : tail[2].eval(env)
       when :lambda
         variables = tail[0].value.map(&:value)
+        if variables.length != variables.uniq.length
+          raise StandardError, "Lambda parameters must be unique."
+        end
         func = ->(*args) {
           if args.length != variables.length
             raise StandardError, "Wrong number of arguments. Expected #{variables.length} argument(s)."
